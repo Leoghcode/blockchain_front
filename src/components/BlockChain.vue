@@ -52,7 +52,7 @@
                 </el-table-column>
                 <el-table-column
                   prop="volume"
-                  label="数量"
+                  label="容量(ml)"
                   width="80">
                 </el-table-column>
                 <el-table-column

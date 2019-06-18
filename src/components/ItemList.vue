@@ -28,7 +28,7 @@
           </el-table-column>
           <el-table-column
             prop="volume"
-            label="数量"
+            label="容量(ml)"
             width="100">
           </el-table-column>
           <el-table-column
@@ -63,7 +63,7 @@
           </el-table-column>
           <el-table-column
             prop="volume"
-            label="数量">
+            label="容量(ml)">
           </el-table-column>
         </el-table>
       </el-col>
@@ -79,7 +79,7 @@
           <el-form-item label="产地">
             <el-input v-model="form.source"></el-input>
           </el-form-item>
-          <el-form-item label="数量">
+          <el-form-item label="容量(ml)">
             <el-input v-model="form.volume"></el-input>
           </el-form-item>
           <el-form-item>

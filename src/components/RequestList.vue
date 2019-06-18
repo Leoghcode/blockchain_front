@@ -15,8 +15,8 @@
             </el-select>
           </el-form-item>
           <el-form-item label="商品">
-            <el-select v-model="form.items" placeholder="请选择请求类型">
-              <el-option v-for="item in itemList" :label="item.name" :value="item" :key="item.name"></el-option>
+            <el-select v-model="form.items" multiple placeholder="请选择请求类型">
+              <el-option v-for="(item, index) in itemList" :label="item.name" :value="index" :key="item.name + index"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="质检结果" v-if="form.type == '质检结果'">
@@ -33,14 +33,22 @@
       </el-col>
       <el-col :span="10" :offset="4">
         <p style="margin-top: -10px">商品详情</p>
-        <div v-if="jsonItems != ''" style="text-align: left;word-wrap: break-word;">
-          <p>商品: {{jsonItems['商品']}}</p>
-          <p>产地: {{jsonItems['产地']}}</p>
-          <p>数量: {{jsonItems['数量']}}</p>
-          <p>出产日期: {{jsonItems['出产日期']}}</p>
-          <p>质检结果: {{jsonItems['质检结果']}}</p>
-          <p>哈希: {{jsonItems['哈希']}}</p>
-        </div>
+        <el-collapse v-model="activeName" accordion>
+          <el-collapse-item v-for="(formItem, index) in formItems" :key="'form-item-' + index"
+          :title="'商品： '+ formItem['name']" :name="index">
+            <div style="text-align: left;">
+              <span class="form-item-span">产地: {{formItem['source']}}</span>
+              <span class="form-item-span">容量(ml): {{formItem['volume']}}</span>
+              <span class="form-item-span">出产日期: {{getDateStr(formItem['create_date'])}}</span>
+              <span class="form-item-span">质检结果: {{formItem['is_qualified'] ? '合格' : '不合格'}}</span>
+              <span class="form-item-span">哈希: {{formItem['hash']}}</span>
+            </div>
+          </el-collapse-item>
+        </el-collapse>
+        <!-- <el-card v-for="(formItem, index) in formItems" :key="'form-item-' + index"
+        :body-style="{padding: '0', paddingLeft: '20px'}">
+
+        </el-card> -->
       </el-col>
     </el-row>
 
@@ -109,11 +117,12 @@
         form: {
           to: '',
           type: '',
-          items: '',
+          items: [],
           value: ''
         },
         types: ['质检', '质检结果', '商品入库', '售出'],
-        requestList: []
+        requestList: [],
+        activeName: ''
       }
     },
     created() {
@@ -126,22 +135,31 @@
       this.getRequestList();
     },
     computed: {
-      jsonItems() {
-        var obj = this.form.items;
-        if(obj == '') return '';
-
-        console.log(obj);
-        var jsonObj = {
-          "商品": obj.name,
-          "产地": obj.source,
-          "数量": obj.volume,
-          "出产日期": this.getDateStr(obj.create_date),
-          "质检结果": obj.is_qualified ? "合格" : "不合格",
-          "哈希": obj.hash,
-        };
-        return jsonObj;
-
+      formItems() {
+        var items = [];
+        for(var index of this.form.items) {
+          items.push(this.itemList[index]);
+        }
+        return items;
       },
+      // jsonItems() {
+      //   var obj = this.formItems;
+      //   var jsonArr = [];
+      //   for(var i of obj) {
+      //     var jsonObj = {
+      //       "name": i.name,
+      //       "source": i.source,
+      //       "volume": i.volume,
+      //       "create_date": this.getDateStr(i.create_date),
+      //       "is_qualified": i.is_qualified ? "合格" : "不合格",
+      //       "hash": i.hash,
+      //     };
+      //     jsonArr.push(jsonObj);
+      //   }
+
+      //   return jsonArr;
+
+      // },
       isManufacter() {
         if(this.$route.params.nodename == '生产商') {
           return true;
@@ -297,7 +315,7 @@
         var data = {
           to: self.form.to,
           type: self.form.type,
-          items: [self.form.items]
+          items: self.formItems
         };
         if(data.type == '质检结果') {
           data.value = self.form.value
@@ -329,3 +347,11 @@
     }
   }
 </script>
+
+<style type="text/css" scoped>
+  .form-item-span {
+    padding-right: 10px;
+    word-wrap: break-word;
+    word-break: break-all;
+  }
+</style>

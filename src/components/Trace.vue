@@ -80,6 +80,13 @@
         .then(function(resp) {
           self.nodes = resp.data.nodes;
           self.transactions = resp.data.transactions;
+          if(self.transactions.length == 0) {
+            self.$message({
+              message: "抱歉，没有该商品信息！",
+              type: "error"
+            });
+            return;
+          }
           if(self.nodes.length >= 2) {
             console.log("in");
             var fIndex = 0;
