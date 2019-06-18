@@ -1,31 +1,20 @@
 <template>
   <div id="app">
-    <!-- <el-row class="header">
-      <span>BlockChain</span>
-      <el-col :span="6" :offset="4">
-        <el-menu mode="horizontal">
-          <el-menu-item index="1"><router-link to="node/node1">node1</router-link></el-menu-item>
-          <el-menu-item index="2"><router-link to="node/node2">node2</router-link></el-menu-item>
-          <el-menu-item index="3"><router-link to="node/validator">validator</router-link></el-menu-item>
-        </el-menu>
-
-      </el-col>
-    </el-row> -->
     <el-menu
-      default-active="this.$router.path"
       router
       class="header"
       mode="horizontal"
       background-color="#409EFF"
       text-color="#fff"
       active-text-color="#ffd04b">
-      <el-menu-item index="/" class="title">
+      <el-menu-item index="/" class="title" :class="{active: curPath == '/'}">
         BlockChain
       </el-menu-item>
       <el-menu-item index="4" class="gap">
         <div></div>
       </el-menu-item>
-      <el-menu-item v-for="(item, i) in routerList" :key="i" :index="item.path">
+      <el-menu-item v-for="(item, i) in routerList" :key="i" :index="item.path"
+      :class="{active: curPath == item.path}">
         {{item.name}}
       </el-menu-item>
     </el-menu>
@@ -44,13 +33,31 @@ export default {
         {path: '/node/nodeA', name: 'nodeA'},
         {path: '/node/node2', name: 'node2'},
         {path: '/node/validator', name: 'validator'},
-      ]
+      ],
+      curPath: ''
     }
   },
   created(){
     this.getNodesFromCA();
   },
+  watch: {
+    '$route' (to, from) {
+      // console.log(to);
+      this.setCurPath(to.params.nodename);
+    }
+  },
   methods: {
+    setCurPath(path) {
+      // console.log("setCurPath");
+      // console.log(path);
+      this.curPath = '';
+      for(var r of this.routerList) {
+        if(path.indexOf(r.name) != -1) {
+          this.curPath = r.path;
+        }
+      }
+
+    },
     getNodesFromCA() {
       var self = this;
       self.$http(self.CA_ADDRESS + "/all")
@@ -61,7 +68,9 @@ export default {
             path: '/node/' + node.name,
             name: node.name
           });
+          localStorage[node.name] = 'http://' + node.address;
         }
+        self.setCurPath(self.$route.path);
       }).catch(function(err) {
         console.log("error");
       })
@@ -101,5 +110,9 @@ html, body {
 .gap:hover {
   background-color: rgb(64, 158, 255)!important;
   cursor: default;
+}
+.active {
+  color: rgb(255, 208, 75)!important;
+  border-bottom-color: rgb(255, 208, 75)!important;
 }
 </style>

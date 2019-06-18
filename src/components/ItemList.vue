@@ -31,6 +31,13 @@
             label="数量"
             width="100">
           </el-table-column>
+          <el-table-column
+            label="质检结果"
+            width="80">
+            <template slot-scope="scope">
+              <span>{{ scope.row.is_qualified ? '合格' : '不合格' }}</span>
+            </template>
+          </el-table-column>
         </el-table>
       </el-col>
     </el-row>
@@ -109,7 +116,7 @@
     },
     computed: {
       isManufacter() {
-        if(this.$route.params.nodename == 'node1') {
+        if(this.$route.params.nodename == '生产商') {
           return true;
         }
         return false;
@@ -119,13 +126,13 @@
       getTransitItemList() {
         var self = this;
         if(!this.server_address) {
-          this.getServerAddress();
+          // this.getServerAddress();
           return;
         }
         self.$http(self.server_address + "/transaction/getRequests")
         .then(function(resp) {
           var index = 0;
-
+          self.transitItemList = [];
           for(var request of resp.data) {
             if(request.status != 1) continue;
             var transaction = request.transaction;
@@ -146,7 +153,7 @@
       getItemList() {
         var self = this;
         if(!this.server_address) {
-          this.getServerAddress();
+          // this.getServerAddress();
           return;
         }
         self.$http(self.server_address + "/transaction/getItems")
@@ -176,10 +183,12 @@
         })
         .then(function(resp) {
           console.log(resp.data);
+          self.getItemList();
           self.$message({
             type: 'success',
             message: '添加成功'
           });
+          self.resetForm();
         }).catch(function(err) {
           console.log("error");
         })
@@ -215,6 +224,13 @@
             }
           }
         }
+      },
+      resetForm() {
+        this.form = {
+          name: '',
+          source: '',
+          volume: ''
+        };
       }
     }
   }

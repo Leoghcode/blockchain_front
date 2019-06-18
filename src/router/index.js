@@ -6,7 +6,7 @@ import NodeList from '@/components/NodeList'
 import ItemList from '@/components/ItemList'
 import RequestList from '@/components/RequestList'
 import BlockChain from '@/components/BlockChain'
-import BlockChainDetail from '@/components/BlockChainDetail'
+import Trace from '@/components/Trace'
 
 Vue.use(Router)
 
@@ -20,6 +20,7 @@ export default new Router({
     {
       path: '/node/:nodename',
       name: 'Node',
+      redirect: '/node/:nodename/nodelist',
       component: Node,
       children: [
         {
@@ -43,10 +44,10 @@ export default new Router({
           component: BlockChain
         },
         {
-          path: 'blockchaindetail',
-          name: 'BlockChainDetail',
-          component: BlockChainDetail
-        }
+          path: 'trace',
+          name: 'Trace',
+          component: Trace
+        },
       ]
     }
   ]

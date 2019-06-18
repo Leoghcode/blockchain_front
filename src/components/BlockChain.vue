@@ -43,7 +43,7 @@
                   prop="name"
                   label="商品名称"
                   width="80"
-                  fixed>
+          >
                 </el-table-column>
                 <el-table-column
                   prop="source"
@@ -72,13 +72,6 @@
                   width="80">
                   <template slot-scope="scope">
                     <span>{{ scope.row.is_qualified ? '合格' : '不合格' }}</span>
-                  </template>
-                </el-table-column>
-                <el-table-column
-                  label="商品状态"
-                  width="80">
-                  <template slot-scope="scope">
-                    <span>{{ scope.row.is_sold ? '已卖出' : '未卖出' }}</span>
                   </template>
                 </el-table-column>
               </el-table>
@@ -155,7 +148,7 @@
       getBlockChain() {
         var self = this;
         if(!this.server_address) {
-          this.getServerAddress();
+          // this.getServerAddress();
           return;
         }
         self.$http(self.server_address + "/blockchain/get")

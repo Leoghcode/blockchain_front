@@ -34,19 +34,24 @@
       }
     },
     created() {
-      console.log(this.server_address);
+      // console.log(this.server_address);
       this.getNodeList();
+    },
+    beforeRouteUpdate(to, from, next) {
+      this.server_address = localStorage[to.params.nodename];
+      this.getNodeList();
+      next();
     },
     methods: {
       getNodeList() {
         var self = this;
-        if(!this.server_address) {
-          this.getServerAddress();
-          return;
-        }
         self.$http(self.server_address + "/node/list")
         .then(function(resp) {
           self.nodeList = resp.data;
+          if(self.nodeList.length == 0) {
+            self.addNodeList();
+            return;
+          }
           for(var node of self.nodeList) {
             node.address = node.host + ":" + node.port;
           }
@@ -65,22 +70,6 @@
         }).catch(function(err) {
           console.log("error");
           console.log(err);
-        })
-      },
-      getServerAddress() {
-        var self = this;
-        self.CA_address = "http://localhost:8080/CA";
-        self.$http({
-          url: this.CA_address + "/getByName",
-          params: {
-            name: self.$route.params.nodename
-          }
-        }).then(function(resp) {
-          var nodename = self.$route.params.nodename;
-          localStorage[nodename] = 'http://' + self.server_info.address;
-          self.server_address = localStorage[nodename];
-        }).catch(function(err) {
-          console.log("error");
         })
       },
     }

@@ -19,6 +19,12 @@
               <el-option v-for="item in itemList" :label="item.name" :value="item" :key="item.name"></el-option>
             </el-select>
           </el-form-item>
+          <el-form-item label="质检结果" v-if="form.type == '质检结果'">
+            <el-select v-model="form.value" placeholder="请选择请求类型">
+              <el-option label="通过" value="1"></el-option>
+              <el-option label="不通过" value="0"></el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="addRequest">立即创建</el-button>
             <el-button>取消</el-button>
@@ -103,7 +109,8 @@
         form: {
           to: '',
           type: '',
-          items: ''
+          items: '',
+          value: ''
         },
         types: ['质检', '质检结果', '商品入库', '售出'],
         requestList: []
@@ -128,7 +135,7 @@
           "商品": obj.name,
           "产地": obj.source,
           "数量": obj.volume,
-          "出产日期": this.getDateStr(obj),
+          "出产日期": this.getDateStr(obj.create_date),
           "质检结果": obj.is_qualified ? "合格" : "不合格",
           "哈希": obj.hash,
         };
@@ -136,7 +143,7 @@
 
       },
       isManufacter() {
-        if(this.$route.params.nodename == 'node1') {
+        if(this.$route.params.nodename == '生产商') {
           return true;
         }
         return false;
@@ -149,7 +156,6 @@
       getNodeList() {
         var self = this;
         if(!this.server_address) {
-          this.getServerAddress();
           return;
         }
         self.$http(self.server_address + "/node/list")
@@ -165,7 +171,7 @@
       getItemList() {
         var self = this;
         if(!this.server_address) {
-          this.getServerAddress();
+          // this.getServerAddress();
           return;
         }
         self.$http(self.server_address + "/transaction/getItems")
@@ -182,7 +188,7 @@
       getTransitItemList() {
         var self = this;
         if(!this.server_address) {
-          this.getServerAddress();
+          // this.getServerAddress();
           return;
         }
         self.$http(self.server_address + "/transaction/getRequests")
@@ -202,7 +208,7 @@
       getRequestList() {
         var self = this;
         if(!this.server_address) {
-          this.getServerAddress();
+          // this.getServerAddress();
           return;
         }
         self.$http(self.server_address + "/transaction/getRequests")
@@ -288,17 +294,22 @@
       },
       addRequest() {
         var self = this;
+        var data = {
+          to: self.form.to,
+          type: self.form.type,
+          items: [self.form.items]
+        };
+        if(data.type == '质检结果') {
+          data.value = self.form.value
+        }
         self.$http({
           url: self.server_address + "/transaction/send",
           method: 'post',
-          data: {
-            to: self.form.to,
-            type: self.form.type,
-            items: [self.form.items]
-          }
+          data: data
         })
         .then(function(resp) {
           console.log(resp.data);
+          self.resetForm();
           self.$message({
             type: 'success',
             message: '添加成功'
@@ -306,6 +317,14 @@
         }).catch(function(err) {
           console.log("error");
         })
+      },
+      resetForm() {
+        this.form = {
+          to: '',
+          type: '',
+          items: '',
+          value: ''
+        };
       }
     }
   }
