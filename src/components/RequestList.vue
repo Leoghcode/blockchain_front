@@ -4,14 +4,14 @@
       <p>发送请求</p>
       <el-col :span="10">
         <el-form ref="form" :model="form" label-width="80px">
-          <el-form-item label="接收方">
-            <el-select v-model="form.to" placeholder="请选择接收方">
-              <el-option v-for="node in nodeList" :label="node.name" :value="node.name" :key="node.name"></el-option>
-            </el-select>
-          </el-form-item>
           <el-form-item label="类型">
             <el-select v-model="form.type" placeholder="请选择请求类型">
               <el-option v-for="type in types" :label="type" :value="type" :key="type"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="接收方" v-show="form.type != '售出'">
+            <el-select v-model="form.to" placeholder="请选择接收方" >
+              <el-option v-for="node in nodeList" :label="node.name" :value="node.name" :key="node.name"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="商品">
@@ -71,12 +71,12 @@
             </template>
           </el-table-column>
           <el-table-column
-            prop="fromShort"
+            prop="fromName"
             label="发送方"
             width="410">
           </el-table-column>
           <el-table-column
-            prop="toShort"
+            prop="toName"
             label="接收方"
             width="410">
           </el-table-column>
@@ -118,7 +118,7 @@
           to: '',
           type: '',
           items: [],
-          value: ''
+          value: '',
         },
         types: ['质检', '质检结果', '商品入库', '售出'],
         requestList: [],
@@ -141,6 +141,13 @@
           items.push(this.itemList[index]);
         }
         return items;
+      },
+      multiSign() {
+        if(this.form.type == '售出') {
+          return false;
+        } else {
+          return true;
+        }
       },
       // jsonItems() {
       //   var obj = this.formItems;
@@ -188,6 +195,7 @@
       },
       getItemList() {
         var self = this;
+        self.itemList = [];
         if(!this.server_address) {
           // this.getServerAddress();
           return;
@@ -238,8 +246,8 @@
           for(var request of self.requestList) {
             request.index = index;
             index++;
-            request.fromShort = request.from.substring(0, 85) + "...";
-            request.toShort = request.to.substring(0, 85) + "...";
+            // request.fromShort = request.from.substring(0, 85) + "...";
+            // request.toShort = request.to.substring(0, 85) + "...";
             request.transaction = JSON.stringify(request.transaction);
             if(request.status == 0) {
               request.status = '待审核';
@@ -315,7 +323,8 @@
         var data = {
           to: self.form.to,
           type: self.form.type,
-          items: self.formItems
+          items: self.formItems,
+          multiSign: self.multiSign
         };
         if(data.type == '质检结果') {
           data.value = self.form.value
@@ -332,6 +341,13 @@
             type: 'success',
             message: '添加成功'
           });
+          if(self.isManufacter) {
+            self.getItemList();
+            self.getTransitItemList();
+          } else {
+            self.itemList = [];
+            self.getTransitItemList();
+          }
         }).catch(function(err) {
           console.log("error");
         })
