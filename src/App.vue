@@ -105,7 +105,7 @@ html, body {
   background-color: rgb(64, 158, 255)!important;
 }
 .gap {
-  width: 400px;
+  width: 80px;
 }
 .gap:hover {
   background-color: rgb(64, 158, 255)!important;

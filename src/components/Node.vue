@@ -1,34 +1,40 @@
 <template>
   <el-row class="tac" :gutter="20">
-    <el-col :span="4" :offset="2">
-      <h5>功能导航</h5>
+    <el-col :span="4">
+      <h5 style="text-align: left;
+    margin-left: 25px;">功能导航</h5>
       <el-menu
         default-active="NodeList"
         class="el-menu-vertical-demo"
         @select="switchPage"
       >
         <el-menu-item index="NodeList"
-        :class="{active: curName == 'NodeList', inactive: curName != 'NodeList'}">
+        :class="{active: curName == 'NodeList', inactive: curName != 'NodeList'}" style="text-align: left;
+    margin-left: 15px;">
           <i class="el-icon-menu"></i>
           <span slot="title">节点列表</span>
         </el-menu-item>
         <el-menu-item index="ItemList"
-        :class="{active: curName == 'ItemList', inactive: curName != 'ItemList'}">
+        :class="{active: curName == 'ItemList', inactive: curName != 'ItemList'}" style="text-align: left;
+    margin-left: 15px;">
           <i class="el-icon-document"></i>
           <span slot="title">商品列表</span>
         </el-menu-item>
         <el-menu-item index="RequestList"
-        :class="{active: curName == 'RequestList', inactive: curName != 'RequestList'}">
+        :class="{active: curName == 'RequestList', inactive: curName != 'RequestList'}" style="text-align: left;
+    margin-left: 15px;">
           <i class="el-icon-chat-dot-round"></i>
           <span slot="title">请求列表</span>
         </el-menu-item>
         <el-menu-item index="BlockChain"
-        :class="{active: curName == 'BlockChain', inactive: curName != 'BlockChain'}">
+        :class="{active: curName == 'BlockChain', inactive: curName != 'BlockChain'}" style="text-align: left;
+    margin-left: 15px;">
           <i class="el-icon-link"></i>
           <span slot="title">区块链&nbsp;&nbsp;&nbsp;&nbsp;</span>
         </el-menu-item>
         <el-menu-item index="Trace"
-        :class="{active: curName == 'Trace', inactive: curName != 'Trace'}">
+        :class="{active: curName == 'Trace', inactive: curName != 'Trace'}" style="text-align: left;
+    margin-left: 15px;">
           <i class="el-icon-search"></i>
           <span slot="title">商品溯源</span>
         </el-menu-item>
