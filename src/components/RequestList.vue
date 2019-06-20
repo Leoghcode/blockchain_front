@@ -71,19 +71,24 @@
             </template>
           </el-table-column>
           <el-table-column
+            prop="type"
+            label="类型"
+            width="120">
+          </el-table-column>
+          <el-table-column
             prop="fromName"
             label="发送方"
-            width="410">
+            width="260">
           </el-table-column>
           <el-table-column
             prop="toName"
             label="接收方"
-            width="410">
+            width="260">
           </el-table-column>
           <el-table-column
             prop="status"
             label="状态"
-            width="80">
+            width="100">
           </el-table-column>
           <el-table-column>
             <template slot="header" slot-scope="scope">
@@ -248,6 +253,7 @@
             index++;
             // request.fromShort = request.from.substring(0, 85) + "...";
             // request.toShort = request.to.substring(0, 85) + "...";
+            request.type = request.transaction.type;
             request.transaction = JSON.stringify(request.transaction);
             if(request.status == 0) {
               request.status = '待审核';

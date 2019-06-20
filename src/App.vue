@@ -62,6 +62,7 @@ export default {
       var self = this;
       self.$http(self.CA_ADDRESS + "/all")
       .then(function(resp) {
+        console.log(resp.data);
         self.routerList = [];
         for(var node of resp.data) {
           self.routerList.push({

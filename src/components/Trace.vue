@@ -37,6 +37,7 @@
                 <el-tag type="success">哈希： {{description.hash}}</el-tag>
               </p>
               <p>
+                <el-tag type="success">交易类型： {{description.type}}</el-tag>
                 <el-tag type="success">发送方： {{description.from}}</el-tag>
                 <el-tag type="success">接收方： {{description.to}}</el-tag>
               </p>
@@ -87,7 +88,12 @@
             });
             return;
           }
+
           if(self.nodes.length >= 2) {
+            // 考虑交易有售出的情况
+            if(self.nodes.length == self.transactions.length){
+              self.nodes.push({name: "消费者"});
+            }
             console.log("in");
             var fIndex = 0;
             var tIndex = fIndex + 1;
@@ -96,6 +102,7 @@
                 'from': self.nodes[fIndex].name,
                 'to': self.nodes[tIndex].name,
                 'hash': transaction['hash'],
+                "type": transaction["type"],
                 'item': []
               };
               for(var item of transaction.item) {
